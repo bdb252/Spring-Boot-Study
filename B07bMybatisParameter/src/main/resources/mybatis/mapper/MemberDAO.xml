@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- mapper 파일을 구성하기 위한 doctype 설정 -->
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.edu.springboot.jdbc.IMemberService">
+
+	<select id="select"
+		resultType="com.edu.springboot.jdbc.MemberDTO">
+		select * from member order by regidate desc
+	</select>
+
+	<!-- 
+	회원등록 : request 내장객체를 통해 받은 파라미터를 개별적으로 전달한 값으로 인파라미터를 채워준다. 
+		이 경우 DTO와 같은 클래스를 사용하지 않으므로 parameterType은 명시하지 않는다.
+		전달되는 3개의 인수는 순서대로 param1,2,3과 같이 기술하면 된다.
+	 -->
+	<insert id="insert">
+		insert into member (id, pass, name) values
+			(#{param1}, #{param2}, #{param3})
+	</insert>
+	
+	<!-- 
+	회원정보 인출 : 파라미터를 @Param 어노테이션으로 변경한 후 전달하므로
+		변경된 이름으로 인파라미터를 설정한다.
+	 -->
+	<select id="selectOne"
+		resultType="com.edu.springboot.jdbc.MemberDTO">
+		select * from member where id=#{_id}
+	</select>
+
+	<!-- 
+	수정처리 : Map에 저장된 파라미터를 받으므로 parameterType에 Map을 명시한다.
+		Map은 자바의 기본클래스지만 패키지의 풀경로를 명시해야 한다.
+		그리고 Key로 저장된 값을 얻어온 후 인파라미터를 설정한다. 
+	 -->
+	<update id="update" parameterType="java.util.HashMap">
+		update member set pass=#{m_pass}, name=#{m_name} where id=#{m_id}
+	</update>
+	
+	<!-- 
+	삭제처리 : 파라미터 순서대로 배열처럼 0,1,2와 같이 인파라미터를 설정할 수 있다. 
+	-->
+	<delete id="delete">
+		delete from member where id=#{0}
+	</delete>
+</mapper>
