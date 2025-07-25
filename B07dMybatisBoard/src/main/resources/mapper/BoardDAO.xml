@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Mybatis 매퍼를 만들기 위한 Doctype 설정 -->
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 
+컨트롤러와 Mapper 사이에서 매개역할을 하는 인터페이스를 namespace로 지정한다.
+xml파일에서는 클래스에 대한 import가 불가능하므로 아래와 같이 패키지의 풀경로를
+명시해야한다.  -->
+<mapper namespace="com.edu.springboot.jdbc.IBoardService">
+
+	<!-- 
+	목록에서 게시물의 갯수를 카운트한다. count() 함수를 사용하므로 resultType은
+	int형으로 명시해야 한다. 또한 파라미터를 저장한 DTO를 사용하므로 parameterType도
+	명시되어 있다.
+	 -->
+	<select id="getTotalCount" resultType="int"
+	parameterType="com.edu.springboot.jdbc.ParameterDTO">
+		SELECT COUNT(*) from myboard
+		<!-- 검색어가 있는 경우에만 where절을 조건부로 추가한다. -->
+		<if test="searchKeyword!=null and !searchKeyword.equals('')">
+			WHERE ${searchField} LIKE '%'|| #{searchKeyword} ||'%'
+		</if>
+	</select>
+	
+	<!-- 
+	각 페이지에 출력한 게시물을 인출한다. 레코드를 인출한 결과를 반환하므로
+	resultType은 DTO로 설정한다. Mapper는 인출된 결과를 1차로 DTO에
+	저장한 후 2차로 List에 추가하여 반환해준다.
+	 -->
+	<select id="listPage"
+		resultType="com.edu.springboot.jdbc.BoardDTO"
+		parameterType="com.edu.springboot.jdbc.ParameterDTO">
+		SELECT * FROM (
+		    SELECT tb.*, rownum rNum from (
+		        SELECT * FROM myboard
+		            <if test="searchKeyword!=null and !searchKeyword.equals('')">
+		            WHERE ${searchField} LIKE
+		            			'%'||#{searchKeyword}||'%'
+		            </if>
+		        	order by idx desc
+		    ) Tb
+		)
+		where rNum<![CDATA[>=]]>#{start}
+				and rNum<![CDATA[<=]]>#{end}
+	</select>
+	<!-- where rNum between #{start}
+				and #{end} -->
+	<!-- 
+	CDATA : unparsed Character Data. 즉 파싱되지 않는 문자데이터라는 뜻이다.
+		Mapper는 XML이므로 꺽쇄괄호로 시작하는 모든 문자열을 엘리먼트로 판단하기
+		때문에 쿼리문 사이에 비교연산자를 사용하면 에러가 발생한다.
+		따라서 파싱되지 않는 문자라는 것을 명시하기 위해 CDATA를 사용해야 한다.
+	 -->
+	 
+	 <!-- 
+	 입력 : @Param 어노테이션으로 변경된 이름으로 인파라미터 설정 후 쿼리 실행
+	  -->
+	  <insert id="write">
+	 	insert into myboard (idx, name, title, content)
+	 	values
+	 	(seq_board_num.nextval, #{_name}, #{_title}, #{_content})
+	 </insert>
+	 
+	 <!-- 
+	 열람 : 파라미터를 저장한 DTO를 통해 인파라미터를 설정한 후 인출한 결과를
+	 	DTO에 저장후 반환한다.
+	  -->
+ 	 <select id="view"
+ 		resultType="com.edu.springboot.jdbc.BoardDTO"
+		parameterType="com.edu.springboot.jdbc.ParameterDTO">
+		SELECT * FROM myboard WHERE idx=#{idx}
+	 </select>
+	
+	
+	 <!-- 
+	 수정 : update 쿼리문의 실행결과는 정수이므로 resultType은 생략한다.
+	 	폼값전체를 저장한 DTO객체를 parameterType으로 설정한다.
+	  -->
+ 	 <update id="edit"
+		parameterType="com.edu.springboot.jdbc.ParameterDTO">
+		UPDATE myboard SET
+		name=#{name}, title=#{title}, content=#{content}
+		WHERE idx=#{idx}
+	 </update>
+	 
+	 <!-- 삭제 : parameterType을 별도로 명시하지 않은 경우에는 파라미터의
+	 	순서대로 param1, 2..와 같이 인파라미터를 설정할 수 있다.
+	 	또는 인덱스 0, 1...과 같이 설정할수도 잇다. -->
+  	 <delete id="delete">
+		DELETE FROM myboard WHERE idx=#{param1}
+	 </delete>
+	
+</mapper>

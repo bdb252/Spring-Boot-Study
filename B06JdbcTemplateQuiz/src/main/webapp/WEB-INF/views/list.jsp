@@ -29,16 +29,23 @@ let deletePost = (userid) => {
 	}
 }
 
+function search(field, keyword){
+	
+}
 </script>
-<!-- POST 방식의 삭제 : 화면상에는 보이지 않는 hidden타입의 폼을 하나 추가한다. -->
-<form name="deleteFrm">
-	<input type="hid-den" name=id />
-</form>
 <body>
+	<!-- POST 방식의 삭제 : 화면상에는 보이지 않는 hidden타입의 폼을 하나 추가한다. -->
+	<form name="deleteFrm">
+		<input type="hidden" name=id />
+	</form>
 	<h2>회원 리스트</h2>
-	<select name="" id="">
-		
+	<select name="searchField">
+		<option value="id">아이디</option>
+        <option value="name">이름</option>
 	</select>
+	<input type="text" />
+	<button type="button" onclick="">검색</button>
+	
 	<table border="1">
 		<tr>
 			<th>아이디</th>
