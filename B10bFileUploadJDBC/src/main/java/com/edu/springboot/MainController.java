@@ -5,12 +5,16 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.edu.springboot.myfile.IMyFileService;
+import com.edu.springboot.myfile.MyFileDTO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.Part;
@@ -24,6 +28,8 @@ public class MainController {
 		return "main";
 	}
 	
+	@Autowired
+	IMyFileService dao;
 	//파일 업로드 폼 매핑
 	@GetMapping("/fileUpload.do")
 	public String fileUpload() {
@@ -32,40 +38,52 @@ public class MainController {
 	
 	//파일 업로드 처리
 	@PostMapping("/uploadProcess.do")
-	public String uploadProcess(HttpServletRequest req, Model model) {
+	public String uploadProcess(HttpServletRequest req, Model model, MyFileDTO myFileDTO) {
+		/*
+		사용자가 입력한 폼값은 DTO를 통해 한꺼번에 받아서 사용한다.
+		단, 파일의 경우에는 원본명과 변경된 이름을 별도로 추가해야 한다.
+		 */
 		try {
-			//업로드할 디렉토리의 물리적 경로를 얻어온다.
+			//물리적 경로 얻어오기
 			String uploadDir = 
 				ResourceUtils.getFile("classpath:static/uploads/").toPath().toString();
 			System.out.println("물리적 경로:"+uploadDir);
-			
-			//전송된 첨부파일을 통해 Part 객체를 생성한다.
+			//Part 인스턴스를 통해 파일 업로드 처리
 			Part part = req.getPart("ofile");
-			//파일명 확인을 위해 헤더값을 얻어온다.
 			String partHeader = part.getHeader("content-disposition");
 			System.out.println("partHeader="+partHeader);
-			//헤더값에서 파일명을 추출하기 위해 문자열을 Split한다.
 			String[] phArr = partHeader.split("filename=");
-			//따옴표를 제거해서 원본파일명을 추출한다.
 			String originalFileName = phArr[1].trim().replace("\"", "");
-			
-			//전송된 파일이 있다면 서버에 저장한다.
+
 			if (!originalFileName.isEmpty()) {
 				part.write(uploadDir+File.separator+originalFileName);
 			}
 			
-			//서버에 저장된 파일의 파일명을 UUID로 생성된 문자열로 변경한다.
+			//UUID로 파일명 변경
 			String savedFileName = MyFunctions.renameFile(uploadDir, originalFileName);
-			
-			model.addAttribute("originalFileName",originalFileName);
-			model.addAttribute("savedFileName",savedFileName);
-			model.addAttribute("title",req.getParameter("title"));
-			model.addAttribute("cate",req.getParameterValues("cate"));
+
+			//DB입력
+			//원본파일명과 저장된파일명을 DTO에 저장
+			myFileDTO.setOfile(originalFileName);
+			myFileDTO.setSfile(savedFileName);
+			//테이블에 insert 처리
+			int result = dao.insertFile(myFileDTO);
+			if(result==1)System.out.println("입력 성공");
+			else System.out.println("입력 실패");
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			System.out.println("업로드 실패");
 		}
-		
+		//파일 목록으로 이동
+		return "redirect:fileUploadOk.do";
+	}
+	
+	//파일 목록
+	@GetMapping("/fileUploadOk.do")
+	public String fileUploadOk(Model model) {
+		//DB에 저장된 레코드를 인출한 후 View로 전달
+		model.addAttribute("fileRows", dao.selectFile());
 		return "fileUploadOk";
 	}
 	

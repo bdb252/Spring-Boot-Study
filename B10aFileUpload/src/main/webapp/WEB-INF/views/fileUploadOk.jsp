@@ -7,6 +7,9 @@
 <meta charset="UTF-8">
 <title>FileUpload</title>
 </head>
+<style>
+img{max-width: 300px;}
+</style>
 <body>
 	<h2>파일 업로드 성공</h2>
 	업로드한 파일명 : ${ originalFileName } <br/>
