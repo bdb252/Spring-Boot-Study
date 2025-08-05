@@ -16,7 +16,8 @@
 		parameterType="com.edu.springboot.mydiary.ParameterDTO">
 		SELECT * FROM (
 		    SELECT tb.*, rownum rNum from (
-		        SELECT * FROM diary	order by diary_idx desc
+		        SELECT * FROM diary	
+	            order by diary_idx desc
 		    ) Tb
 		)
 		where rNum<![CDATA[>=]]>#{start}
@@ -25,12 +26,12 @@
 	<!-- where rNum between #{start}
 				and #{end} -->
 				
-  	<insert id="write">
+  	<insert id="write" parameterType="com.edu.springboot.mydiary.MyDiaryDTO">
 	 	insert into diary (diary_idx, member_idx, ofile, sfile, description, 
-	 	temperature, humidity, sunlight)
+	 	temperature, humidity, sunlight, height, fruit)
 	 	values
-	 	(seq_board_num.nextval, #{_member_idx}, #{_ofile}, #{_sfile}, #{_description},
-	 	#{_temperature}, #{_humidity}, #{_sunlight})
+	 	(seq_board_num.nextval, #{member_idx}, #{ofile}, #{sfile}, #{description},
+	 	#{temperature}, #{humidity}, #{sunlight}, #{height}, #{fruit})
 	</insert>
 	 
  	<select id="view"
@@ -43,11 +44,20 @@
  	<update id="edit"
 		parameterType="com.edu.springboot.mydiary.ParameterDTO">
 		UPDATE diary SET
-		
+		ofile=#{ofile}, sfile=#{sfile}, description=#{description}, 
+		temperature=#{temperature}, humidity=#{humidity}, sunlight=#{sunlight}
 		WHERE diary_idx=#{diary_idx}
 	</update>
 	 
   	<delete id="delete">
-		DELETE FROM myboard WHERE idx=#{param1}
+		DELETE FROM diary WHERE diary_idx=#{param1}
 	</delete>
+	
+	
+	<select id="selectByMonth" 
+	resultType="com.edu.springboot.mydiary.DTO">
+	  SELECT * FROM diary
+	  WHERE DATE_FORMAT(postdate, '%Y') = #{year}
+	    AND DATE_FORMAT(postdate, '%m') = #{month}
+	</select>
 </mapper>

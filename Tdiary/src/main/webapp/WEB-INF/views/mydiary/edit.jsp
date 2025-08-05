@@ -10,35 +10,22 @@
 	<h2>게시판 수정(Mybatis)</h2>
 	<form name="writeFrm" method="post"
 		action="./edit.do" onsubmit="return validateForm(this);">
-	<input type="hid-den" name="idx" value="${boardDTO.idx }" />
+	<input type="hid-den" name="idx" value="${myDiaryDTO.diary_idx }" />
 	<table border="1" width="90%">
 	    <tr>
 	        <td>작성자</td>
 	        <td>
 	            <input type="text" name="name" style="width:150px;" 
-	            	value="${boardDTO.name }" />
-	        </td>
-	    </tr>
-	    <tr>
-	        <td>제목</td>
-	        <td>
-	            <input type="text" name="title" style="width:90%;" 
-	            	value="${boardDTO.title }"/>
+	            	value="${myDiaryDTO.member_idx}" />
 	        </td>
 	    </tr>
 	    <tr>
 	        <td>내용</td>
 	        <td>
 	            <textarea name="content" style="width:90%;
-	            	height:100px;">${boardDTO.content }</textarea>
+	            	height:100px;">${myDiaryDTO.description}</textarea>
 	        </td>
 	    </tr>
-	    <!-- <tr>
-	        <td>비밀번호</td>
-	        <td>
-	            <input type="password" name="pass" style="width:100px;" />
-	        </td>
-	    </tr> -->
 	    <tr>
 	        <td colspan="2" align="center">
 	            <button type="submit">작성 완료</button>

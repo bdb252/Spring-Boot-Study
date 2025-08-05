@@ -1,0 +1,118 @@
+@charset "UTF-8";
+* {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+ font-family: Arial, sans-serif;
+ /* font-size: 12px; */
+}
+body {
+ background-color: #f4f4f4;
+ display: flex;
+ flex-direction: column; /* 세로 방향으로 정렬 */
+ justify-content: flex-start; /* 주축을 따라 중앙 정렬 */
+ align-items: center; /* 교차축을 따라 상단 정렬 */
+ height: 100vh;
+}
+h2{
+	display: block;
+}
+.board {
+ width: 80%;
+ max-width: 1000px;
+ background-color: #fff;
+ box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+ border-radius: 8px;
+ overflow: hidden;
+ margin-top: 10px;
+}
+table {
+ width: 100%;
+ border-collapse: collapse; 
+}
+thead {
+ background-color: #f8f8f8;
+}
+th, td {
+ padding: 15px;
+ text-align: center;
+}
+td.bo_title{
+ text-align: left;
+}
+th {
+ background-color: #333;
+ color: #fff;
+ font-weight: bold;
+ text-align: center;
+}
+tbody tr:nth-child(even) {
+ background-color: #dadada;
+}
+tbody tr:hover {
+ background-color: #f1f1f1;
+ cursor: pointer;
+}
+tbody td {
+ border-bottom: 1px solid #ddd;
+}
+tbody tr {
+ border-bottom: 1px solid #ddd;
+}
+.detail-view td {
+ background-color: #f9f9f9;
+ text-align: left;
+}
+.detail-view td:last-child {
+ /* white-space: pre-wrap; 긴 내용이 있을 경우 줄바꿈 허용 */
+ background-color: #fff; /* 내용 칸은 배경을 흰색으로 */
+ text-align: left;
+}
+/* No와 작성자, 날짜와 조회수의 td를 동일한 너비로 고정 */
+tbody tr th:first-child,
+tbody tr td:first-child,
+tbody tr th:nth-child(3),
+tbody tr td:nth-child(3) {
+ width: 100px;
+}
+.write-view td {
+ background-color: #f9f9f9;
+}
+.write-view input[type="text"],
+.write-view input[type="password"],
+.write-view textarea {
+ width: 100%;
+ padding: 10px;
+ border: 1px solid #ccc;
+ border-radius: 4px;
+ font-size: 14px;
+}
+.write-view textarea {
+ resize: vertical;
+}
+.form-actions {
+ margin-top: 20px;
+ text-align: center;
+}
+.form-actions button {
+ padding: 10px 20px;
+ margin: 0 10px;
+ background-color: #333;
+ color: #fff;
+ border: none;
+ border-radius: 4px;
+ cursor: pointer;
+}
+.form-actions button:hover {
+ background-color: #555;
+}
+a {
+ text-decoration: none; /* 기본 밑줄 제거 */
+ color: inherit; /* 텍스트 색상 상속 */
+ transition: background-color 0.3s ease, text-decoration 0.3s ease; /* 배경색과 밑줄의 변화를 부드럽게 전환 */
+}
+a:hover {
+ color: #b5b5b5; /* 마우스 오버 시 연한 회색 배경 */
+ text-decoration: underline; /* 마우스 오버 시 밑줄 표시 */
+}
+

@@ -9,21 +9,6 @@
 </head>
 <body>
 	<h2>게시판 목록(Mybatis)</h2>
-	<!-- 검색 폼 -->
-    <form method="get">  
-    <table border="1" width="90%">
-    <tr>
-        <td align="center">
-            <select name="searchField">
-                <option value="title">제목</option>
-                <option value="content">내용</option>
-            </select>
-            <input type="text" name="searchKeyword" />
-            <input type="submit" value="검색하기" />
-        </td>
-    </tr>
-    </table>
-    </form>
 
     <!-- 목록 테이블 -->
     <table border="1" width="90%">
@@ -54,7 +39,7 @@
                 (((maps.pageNum-1) * maps.pageSize)	+ loop.index)}
             </td>
             <td align="left"> 
-                <a href="./view.do?idx=${ row.diary_idx }">${ row.member_idx}</a> 
+                <a href="./view.do?diary_idx=${ row.diary_idx }">${ row.member_idx}</a> 
             </td> 
             <td>${ row.description }</td> 
             <td>${ row.temperature }</td> 

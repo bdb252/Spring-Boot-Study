@@ -32,9 +32,12 @@
 
 
 	<h2>게시판 작성(Mybatis)</h2>
-	<form name="writeFrm" method="post"
+	<form name="writeFrm" method="post" enctype="multipart/form-data"
 		action="./write.do" onsubmit="return validateForm(this);">
 	<table border="1" width="90%">
+	    <!-- 
+	    
+	     -->
 	    <tr>
 	        <td>작성자</td>
 	        <td>
@@ -42,15 +45,45 @@
 	        </td>
 	    </tr>
 	    <tr>
-	        <td>제목</td>
+	        <td>온도</td>
 	        <td>
-	            <input type="text" name="title" style="width:90%;" />
+	            <input type="text" name="temperature" style="width:90%;" />
 	        </td>
 	    </tr>
 	    <tr>
-	        <td>내용</td>
+	        <td>습도</td>
 	        <td>
-	            <textarea name="content" style="width:90%;height:100px;"></textarea>
+	            <input type="text" name="humidity" style="width:90%;" />
+	        </td>
+	    </tr>
+	    <tr>
+	        <td>일조량</td>
+	        <td>
+	            <input type="text" name="sunlight" style="width:90%;" />
+	        </td>
+	    </tr>
+	    <tr>
+	        <td>키</td>
+	        <td>
+	            <input type="text" name="height" style="width:90%;" />
+	        </td>
+	    </tr>
+	    <tr>
+	        <td>열매 개수</td>
+	        <td>
+	            <input type="text" name="fruit" style="width:90%;" />
+	        </td>
+	    </tr>
+	    <tr>
+	        <td>설명</td>
+	        <td>
+	            <textarea name="description" style="width:90%;height:100px;"></textarea>
+	        </td>
+	    </tr>
+	    <tr>
+	        <td>이미지</td>
+	        <td>
+	        	<input type="file" name="ofile" />
 	        </td>
 	    </tr>
 	    <tr>

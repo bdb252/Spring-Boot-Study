@@ -6,8 +6,8 @@ import lombok.Data;
 
 @Data
 public class MyDiaryDTO {
-	private String diary_idx;
-	private String member_idx;
+	private Long diary_idx;
+	private Long member_idx;
 	private Object ofile;
 	private String sfile;
 	private Date postdate;
@@ -15,4 +15,6 @@ public class MyDiaryDTO {
 	private float temperature; 
 	private float humidity; 
 	private float sunlight; 	
+	private float height;
+	private int fruit;
 }

@@ -35,13 +35,22 @@
       addMonths
     } from "https://cdn.skypack.dev/date-fns@2.30.0";
 
-    const posts = [
-      { date: '2025-08-04', image: 'https://via.placeholder.com/100x50?text=4일' },
-      { date: '2025-08-15', image: 'https://via.placeholder.com/100x50?text=15일' },
-      { date: '2025-08-25', image: 'https://via.placeholder.com/100x50?text=25일' },
-    ];
+    let currentDate = new Date(); 
+    let posts = [];
 
-    let currentDate = new Date(); // 전역 상태로 관리
+	async function loadPosts(year, month){
+	  const y = year;
+	  const m = String(month + 1).padStart(2, "0"); // 월은 0부터 시작하므로 +1
+
+      const response = await fetch(`/api/posts?year=${y}&month=${m}`);
+        if (response.ok) {
+          posts = await response.json(); // [{ date: '2025-08-04', imageUrl: '...' }, ...]
+        } 
+	    else {
+    	  console.error("이미지 데이터를 불러오지 못했습니다.");
+    	  posts = [];
+   	  }
+	}
 
     const header = document.getElementById("calendar-header");
     const body = document.getElementById("calendar-body");
@@ -96,7 +105,7 @@
           const post = posts.find(p => format(new Date(p.date), 'yyyy-MM-dd') === formattedDate && p.image);
           if (post) {
             const img = document.createElement('img');
-            img.src = post.image;
+            img.src = `/uploads/${post.imageUrl}`;
             img.alt = "썸네일";
             img.className = "thumbnail";
             cell.appendChild(img);
@@ -111,6 +120,7 @@
     }
 
     function renderAll() {
+	  await loadPosts(currentDate.getFullYear(), currentDate.getMonth());
       renderHeader();
       renderCalendar();
     }
