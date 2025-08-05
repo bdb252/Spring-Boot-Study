@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>월별 달력</title>
+  <link rel="stylesheet" href="../css/mydiarystyle.css" />
+</head>
+<body>
+  <nav>TopNav</nav>
+  <h2>calendar</h2>
+    <div class="calendar-container">
+    <div class="calendar-controls">
+      <button id="prev-month">◀ 이전달</button>
+      <div class="calendar-title" id="calendar-title"></div>
+      <button id="next-month">다음달 ▶</button>
+    </div>
+    <div class="calendar-header" id="calendar-header"></div>
+    <div class="calendar-body" id="calendar-body"></div>
+  </div>
+
+</body>
+</html>
+<script type="module">
+    import {
+      startOfMonth,
+      endOfMonth,
+      startOfWeek,
+      endOfWeek,
+      addDays,
+      format,
+      isSameMonth,
+      isToday,
+      subMonths,
+      addMonths
+    } from "https://cdn.skypack.dev/date-fns@2.30.0";
+
+    const posts = [
+      { date: '2025-08-04', image: 'https://via.placeholder.com/100x50?text=4일' },
+      { date: '2025-08-15', image: 'https://via.placeholder.com/100x50?text=15일' },
+      { date: '2025-08-25', image: 'https://via.placeholder.com/100x50?text=25일' },
+    ];
+
+    let currentDate = new Date(); // 전역 상태로 관리
+
+    const header = document.getElementById("calendar-header");
+    const body = document.getElementById("calendar-body");
+    const title = document.getElementById("calendar-title");
+
+    document.getElementById("prev-month").addEventListener("click", () => {
+      currentDate = subMonths(currentDate, 1);
+      renderAll();
+    });
+
+    document.getElementById("next-month").addEventListener("click", () => {
+      currentDate = addMonths(currentDate, 1);
+      renderAll();
+    });
+
+    function renderHeader() {
+      header.innerHTML = "";
+      ['일', '월', '화', '수', '목', '금', '토'].forEach(day => {
+        const div = document.createElement('div');
+        div.textContent = day;
+        header.appendChild(div);
+      });
+    }
+
+    function renderCalendar() {
+      body.innerHTML = "";
+
+      const monthStart = startOfMonth(currentDate);
+      const monthEnd = endOfMonth(monthStart);
+      const startDate = startOfWeek(monthStart, { weekStartsOn: 0 });
+      const endDate = endOfWeek(monthEnd, { weekStartsOn: 0 });
+
+      title.textContent = format(monthStart, "yyyy년 MM월");
+
+      let day = startDate;
+      while (day <= endDate) {
+        const row = document.createElement('div');
+        row.className = 'grid-row';
+
+        for (let i = 0; i < 7; i++) {
+          const formattedDate = format(day, 'yyyy-MM-dd');
+          const cell = document.createElement('div');
+          cell.className = 'calendar-cell';
+
+          if (!isSameMonth(day, monthStart)) cell.classList.add('inactive');
+          if (isToday(day)) cell.classList.add('today');
+
+          const dateText = document.createElement('div');
+          dateText.textContent = format(day, 'd');
+          cell.appendChild(dateText);
+
+          const post = posts.find(p => format(new Date(p.date), 'yyyy-MM-dd') === formattedDate && p.image);
+          if (post) {
+            const img = document.createElement('img');
+            img.src = post.image;
+            img.alt = "썸네일";
+            img.className = "thumbnail";
+            cell.appendChild(img);
+          }
+
+          row.appendChild(cell);
+          day = addDays(day, 1);
+        }
+
+        body.appendChild(row);
+      }
+    }
+
+    function renderAll() {
+      renderHeader();
+      renderCalendar();
+    }
+
+    renderAll();
+  </script>
